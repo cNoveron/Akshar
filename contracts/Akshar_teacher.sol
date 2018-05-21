@@ -1,17 +1,21 @@
 pragma solidity ^0.4.0;
 
-import './lib_actor.sol';
-import './Akshar_attendance_storer.sol';
+import './Akshar_institution_helper.sol';
 
-contract teacher{
-    //0x672a39D1Ea4df51378988518021dBE8F8f690181
+contract teacher_helper{
+    // 
     
-    attendance_storer 
-    use_attendance_storer_to = attendance_storer(0x92CFe27e165a2C15958fc75e98c6599c5627436F);
+    institution_helper 
+    use_institution_helper_to = institution_helper(0x3c1BE22725878b1e689b76F8be9868A86915b008);
     
-    function acknowledge_attendance_of_student(address[5] of_students) 
+    function request_institution_to_acknowledge_attendance_of_me()
     public{
-        return use_attendance_storer_to.store_attendance(of_students);
+        use_institution_helper_to.acknowledge_teacher_attendance(msg.sender);
+    }
+    
+    function request_institution_to_acknowledge_attendance_of_student(address of_account) 
+    public{
+        use_institution_helper_to.acknowledge_student_attendance(of_account,msg.sender);
     }
     
 }

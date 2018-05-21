@@ -1,32 +1,37 @@
 pragma solidity ^0.4.0;
 
-import './lib_actor.sol';
+import './Akshar.sol';
 import './Akshar_registrator.sol';
 
 contract enroller{
-    //0xeFCe13765B7B26c226c522336BE72039F5ED7105
+    // 
     
-    address address_of_registrator = 0xB11741A7C22C8e2eF7cC9B3A108EE58Eb3A14DaB;
-    registrator inquiry_registrator_for = registrator(address_of_registrator);
+    using Akshar for Akshar.role;
     
-    using lib_actor for lib_actor.role;
-    
-    mapping(address => address[]) addresses_of_students_from_teacher_adress;
+    mapping(address => address[])   addresses_of_students_from_teacher_adress;
+    mapping(address => address)     address_of_teacher_from_student_adress;
     
     event enrollation_successful(
         address     indexed     of_student, 
-        address     indexed     of_teacher
+        address     indexed     as_pupil_of_teacher
     );
     
-    function enroll(address of_student)
+    function enroll(address of_student_as_pupil, address of_teacher)
     public{
-        addresses_of_students_from_teacher_adress[msg.sender].push(of_student);
-        emit enrollation_successful(of_student,msg.sender);
+        addresses_of_students_from_teacher_adress[of_teacher].push(
+            of_student_as_pupil
+        );
+        address_of_teacher_from_student_adress[of_student_as_pupil] = of_teacher;
+        emit enrollation_successful(of_student_as_pupil,of_teacher);
     }
     
-    function addresses_of_students_of_teacher(address of_account) 
+    function get_addresses_of_pupils(address of_teacher) 
     public view returns(address[]){
-        return addresses_of_students_from_teacher_adress[of_account];
+        return addresses_of_students_from_teacher_adress[of_teacher];
     }
     
+    function query_for_pupil_relationship(address of_account_as_pupil,address of_teacher)
+    public view returns(bool){
+        return address_of_teacher_from_student_adress[of_account_as_pupil] == of_teacher;
+    }
 }
